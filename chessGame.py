@@ -2,7 +2,7 @@ import pygame
 import sys
 import chess
 import chess.svg
-from pygame.locals import *
+from pygame.locals import QUIT, MOUSEBUTTONDOWN
 # from playsound import playsound
 
 # Constants
