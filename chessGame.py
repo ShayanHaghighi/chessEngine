@@ -21,29 +21,46 @@ class Game():
     def __init__(self,board,FPS=30):
         self.board = board
         self.FPS = FPS
-        # initialtise pygame elements 
-        pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
-        pygame.display.set_caption('Chess Game')
         self.clock = pygame.time.Clock()
-
-        
-        # initialise piece svg dictionary
         self.pieces = {}
+        self.colorAndSquares = []
+
+        self.init_pygame
+        self.init_pieces()
+        self.init_squares()
+
+    # initialtise pygame elements 
+    def init_pygame(self):
+        pygame.init()
+        pygame.display.set_caption('Chess Game')
+        
+
+
+    # initialise piece svg dictionary
+    def init_pieces(self):
         for color in ['w', 'b']:
             for piece in ['r', 'n', 'b', 'q', 'k', 'p']:
                 img = pygame.image.load(f'./media/{color}{piece}.svg')
                 img = pygame.transform.scale(img, (SQUARE_SIZE, SQUARE_SIZE))
                 self.pieces[f'{color}{piece}'] = img
 
-        # initialise all the square
-        # (useful for highlighting certain squares)
-        self.colorAndSquares = []
+    # initialise all the square
+    # (useful for highlighting certain squares)
+    def init_squares(self):
         for row in reversed(range(8)):
             for col in range(8):
                 color = LIGHT_COLOR if (row + col) % 2 == 0 else DARK_COLOR
                 self.colorAndSquares.append([color,pygame.Rect(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE),False])
     
+
+
+    def draw_board(self):
+            for color, square, selected in self.colorAndSquares:
+                pygame.draw.rect(self.screen, color, square)
+                if selected:
+                    self.draw_square_with_triangles(color,*square)
+
 
     # Draw triangles in the corners
     # used when a piece is capturable
@@ -55,11 +72,6 @@ class Game():
 
 
 
-    def draw_board(self):
-        for square in self.colorAndSquares:
-            pygame.draw.rect(self.screen, square[0], square[1])
-            if square[2]:
-                self.draw_square_with_triangles(square[0],*square[1])
 
         
 
@@ -79,6 +91,7 @@ class Game():
         col = x // SQUARE_SIZE
         row = 7 - (y // SQUARE_SIZE)  
         return chess.square(col, row)
+    
 
     def highlightSquares(self,squares):
         for i,square in enumerate(self.colorAndSquares):

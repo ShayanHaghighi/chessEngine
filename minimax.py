@@ -149,8 +149,7 @@ class MinMax():
                     return alpha, None
                 elif eval_type == 'BETA' and stored_eval >= beta:
                     return beta, None
-
-
+                
         
         if board.outcome():
 
@@ -202,11 +201,8 @@ class MinMax():
             bestMove = None
             for move in self.order_moves(board):
                 board.push(move)
-                # self.game.draw_all()
-                (eval,e) = self.minimax(board,depth-1,alpha,beta,not maximisingPlayer)
+                (eval,_) = self.minimax(board,depth-1,alpha,beta,not maximisingPlayer)
                 board.pop()
-                # print("eval:")
-                # print(eval,e)
                 if eval < minEval:
                     minEval = eval
                     bestMove = move
@@ -228,9 +224,7 @@ class MinMax():
     def iterative_deepening(self, board, max_depth,maximisingPlayer):
         self.transposition_table = {k: v for k, v in self.transposition_table.items() if v[3]<board.ply()}
         best_move = None
-        # self.transposition_table = {}
         depth = 1
-        # for depth in range(1, max_depth + 1):
         start = time.time()
         while depth < max_depth and time.time()-start < 2:
             eval, best_move = self.minimax(board, depth, -math.inf, math.inf, maximisingPlayer)
@@ -238,9 +232,3 @@ class MinMax():
 
         print("depth",depth)
         return eval,best_move 
-    
-
-# if __name__=="__main__":
-#     ai = MinMax()
-#     for i in range(64):
-#         print(ai.reverseIndex(i))
